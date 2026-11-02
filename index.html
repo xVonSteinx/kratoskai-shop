@@ -429,7 +429,7 @@
             <li>Besondere Hinweise (z. B. Aussprache)</li>
             <li>Deine E-Mail für die Lieferung</li>
           </ol>
-          <div class="ordbox">Deine Bestellnummer: <span class="ordnr" data-order></span><br>Bei PayPal bitte als Mitteilung angeben – so kann Kratoskai Zahlung und Formular zuordnen.</div>
+          <div class="ordbox">Deine Bestellnummer: <span class="ordnr" data-order></span><br>Sie wird automatisch an die Zahlung und ins Bestellformular übernommen.</div>
         </div>
       </div>
     </div>
@@ -455,6 +455,14 @@
         <form id="orderform" novalidate>
           <fieldset id="formfields" disabled style="border:0;padding:0;margin:0;min-width:0">
             <div class="formgrid">
+              <div class="field">
+                <label class="l" for="f-order">Bestellnummer</label>
+                <input type="text" id="f-order" readonly data-order-input>
+              </div>
+              <div class="field">
+                <label class="l" for="f-paid">Zahlung</label>
+                <input type="text" id="f-paid" readonly>
+              </div>
               <div class="field">
                 <label class="l" for="f-name">Für wen ist das Video? <span class="req">*</span></label>
                 <input type="text" id="f-name" name="entry.1903126500" required maxlength="80" placeholder="z. B. Lisa" autocomplete="off">
@@ -617,7 +625,7 @@
   <p>Nachrichten über das Kontaktformular (Name, E-Mail, Nachricht) werden über den Dienst FormSubmit (formsubmit.co) per E-Mail an uns weitergeleitet und nur zur Bearbeitung deiner Anfrage verwendet (Art. 6 Abs. 1 lit. b bzw. f DSGVO).</p>
 
   <h3>Lokale Speicherung im Browser</h3>
-  <p>Für den Bestellablauf speichert die Seite deine Bestellnummer im Sitzungsspeicher deines Browsers. Er wird beim Schließen des Tabs gelöscht. Es werden keine Tracking- oder Werbe-Cookies eingesetzt.</p>
+  <p>Für den Bestellablauf speichert die Seite deine Bestellnummer und den Zahlungsstatus im lokalen Speicher deines Browsers. Beides wird gelöscht, sobald du das Bestellformular abschickst. Es werden keine Tracking- oder Werbe-Cookies eingesetzt.</p>
 
   <h3>Deine Rechte</h3>
   <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Wende dich dazu an <a href="mailto:support@netpd.de">support@netpd.de</a>. Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren.</p>
@@ -684,10 +692,12 @@
   // diese Seite mit ?bezahlt=1 eintragen – dann ist das Formular sofort offen.
   // =======================
 
+  // localStorage so the order number survives the round trip to Stripe (even in a new tab)
   function store(key, value) {
     try {
-      if (value === undefined) return sessionStorage.getItem(key);
-      sessionStorage.setItem(key, value);
+      if (value === undefined) return localStorage.getItem(key);
+      if (value === null) localStorage.removeItem(key);
+      else localStorage.setItem(key, value);
     } catch (e) { return null; }
   }
 
@@ -863,6 +873,8 @@
 
   function unlockForm(via, scroll) {
     store("kr-paid", via);
+    document.getElementById("f-order").value = orderNo;
+    document.getElementById("f-paid").value = "✅ bezahlt (" + via.split(" ")[0] + ")";
     formcard.classList.remove("locked");
     fields.disabled = false;
     if (scroll) setTimeout(() => document.getElementById("formular").scrollIntoView({ behavior: "smooth" }), 400);
@@ -918,6 +930,9 @@
       document.getElementById("s-mail").textContent = document.getElementById("f-mail").value;
       form.hidden = true;
       document.getElementById("success").hidden = false;
+      // Order done: the next purchase gets a fresh number and a locked form
+      store("kr-order", null);
+      store("kr-paid", null);
       formcard.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (err) {
       send.disabled = false;
