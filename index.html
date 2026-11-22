@@ -262,6 +262,19 @@
     border: 2px solid var(--ink); background: var(--surface); color: var(--ink); font-size: 20px; cursor: pointer;
   }
   .todo { background: #ffe14d; color: #1d1a17; padding: 0 6px; border-radius: 4px; font-weight: 800; }
+  .order-fab {
+    position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 18;
+    transition: opacity .25s, transform .25s;
+  }
+  .order-fab.away { opacity: 0; transform: translateY(20px); pointer-events: none; }
+  body { padding-bottom: 72px; }
+  .promo { margin: 14px 0 4px; }
+  .promo input { text-transform: uppercase; }
+  .promo .hint.ok { color: #3aa655; font-weight: 700; }
+  #total-price s { color: var(--muted); font-weight: 600; margin-right: 6px; }
+  .taxnote { text-align: right; margin: -4px 0 12px; }
+  .hint { display: block; margin-top: 6px; font-size: 13px; color: var(--muted); }
+  dialog.legal code { font-size: 13px; background: rgba(0,0,0,.06); padding: 0 4px; border-radius: 4px; }
   .linkbtn { background: none; border: 0; padding: 0; font: inherit; color: var(--fire); text-decoration: underline; cursor: pointer; }
   footer nav button { background: none; border: 0; padding: 0; font: inherit; color: inherit; text-decoration: underline; cursor: pointer; }
 
@@ -438,7 +451,14 @@
 
           <label class="check"><input type="checkbox" id="agree"> <span>Ich habe die Hinweise gelesen: keine beleidigenden, anstößigen oder trollhaften Inhalte, und die Rückgabe ist ausgeschlossen, weil das Video individuell für mich angefertigt wird.</span></label>
 
-          <div class="total"><span>Gesamt</span><span data-price></span></div>
+          <div class="field promo">
+            <label class="l" for="promo">Rabattcode <span class="opt">(optional)</span></label>
+            <input type="text" id="promo" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Code eingeben">
+            <span class="hint" id="promo-msg" role="status"></span>
+          </div>
+
+          <div class="total"><span>Gesamt</span><span id="total-price" data-price></span></div>
+          <p class="hint taxnote">Endpreis. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>
           <button class="btn full" id="pay" disabled>Jetzt bezahlen</button>
           <p class="msg" id="msg" role="status"></p>
         </div>
@@ -531,6 +551,7 @@
                   <label><input type="radio" name="entry.1882400945" value="Ja" required> 👍 Ja, gerne</label>
                   <label><input type="radio" name="entry.1882400945" value="Nein"> 🙅 Nein, bleibt privat</label>
                 </div>
+                <span class="hint">Freiwillig. Dein „Ja“ kannst du jederzeit per E-Mail an <a href="mailto:support@netpd.de">support@netpd.de</a> widerrufen – das Video wird dann entfernt.</span>
               </div>
             </div>
 
@@ -552,11 +573,11 @@
 
             <details class="rules">
               <summary>🔐 Datenschutz zum Formular</summary>
-              <p>Deine Angaben (der Name der beschenkten Person, Anlass und Wunschinhalte, E-Mail-Adresse sowie freiwillige Angaben) werden ausschließlich zur Erstellung und Auslieferung deines Grußvideos durch Kratoskai verarbeitet. Keine Weitergabe an Dritte, kein Verkauf, keine Werbung. Die Daten werden nur so lange gespeichert, wie es für Bearbeitung und Lieferung nötig ist, und danach gelöscht.</p>
-              <p>Du hast jederzeit das Recht auf Auskunft, Berichtigung oder Löschung deiner Daten: <a href="mailto:support@netpd.de">support@netpd.de</a></p>
+              <p>Deine Angaben (Name der beschenkten Person, Anlass und Wunschinhalte, E-Mail-Adresse sowie freiwillige Angaben) werden ausschließlich zur Erstellung und Auslieferung deines Grußvideos verarbeitet (Art. 6 Abs. 1 lit. b DSGVO). Beim Abschicken werden sie über Google Forms (Google Ireland Ltd.) an uns übermittelt. Kein Verkauf, keine Werbung. Die Daten werden gelöscht, sobald sie für Bearbeitung und Lieferung nicht mehr nötig sind.</p>
+              <p>Die Upload-Erlaubnis ist freiwillig (Art. 6 Abs. 1 lit. a DSGVO) und jederzeit widerrufbar. Auskunft, Berichtigung, Löschung: <a href="mailto:support@netpd.de">support@netpd.de</a> – alle Details in der <button type="button" class="linkbtn" data-open="datenschutz">Datenschutzerklärung</button>.</p>
             </details>
 
-            <label class="check"><input type="checkbox" id="f-privacy" required> <span>Ich bin einverstanden, dass meine Angaben zur Erstellung des Grußvideos verarbeitet werden. <span class="req">*</span></span></label>
+            <label class="check"><input type="checkbox" id="f-privacy" required> <span>Ich habe die <button type="button" class="linkbtn" data-open="datenschutz">Datenschutzhinweise</button> gelesen und weiß, dass meine Angaben zur Erstellung des Grußvideos verarbeitet werden. <span class="req">*</span></span></label>
 
             <button class="btn full" type="submit" id="send">🎬 Auftrag abschicken</button>
             <p class="msg" id="formmsg" role="status"></p>
@@ -603,7 +624,7 @@
 
 <footer>
   <div class="wrap">
-    <span>© <span id="year"></span> Kratoskai · @kratoskai1974</span>
+    <span>© <span id="year"></span> Kratoskai · @kratoskai1974 · 🍪 keine Cookies · nur anonyme Besucherzählung</span>
     <nav>
       <button type="button" data-open="impressum">Impressum</button>
       <button type="button" data-open="datenschutz">Datenschutz</button>
@@ -622,6 +643,8 @@
      Kontaktformular: <button type="button" class="linkbtn" data-open="kontakt">Nachricht schreiben</button></p>
   <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
   <p>Paul Dosdall, Anschrift wie oben</p>
+  <h3>Umsatzsteuer</h3>
+  <p>Kleinunternehmer gemäß § 19 UStG – es wird keine Umsatzsteuer berechnet und ausgewiesen.</p>
   <h3>Verbraucherstreitbeilegung</h3>
   <p>Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
 </dialog>
@@ -629,35 +652,46 @@
 <dialog class="legal" id="datenschutz" aria-labelledby="ds-h">
   <button class="x" type="button" data-close aria-label="Schließen">✕</button>
   <h2 class="display" id="ds-h">Datenschutz</h2>
-  <h3>Verantwortlicher</h3>
-  <p>netpd innovations, Paul Dosdall – Kontaktdaten siehe <button type="button" class="linkbtn" data-open="impressum">Impressum</button>. E-Mail: <a href="mailto:support@netpd.de">support@netpd.de</a></p>
 
-  <h3>Hosting</h3>
-  <p>Diese Website wird bei GitHub Pages (GitHub Inc., USA) gehostet. Beim Aufruf verarbeitet der Hoster technisch notwendige Daten wie IP-Adresse, Zeitpunkt und aufgerufene Seite, um die Seite auszuliefern und abzusichern (Art. 6 Abs. 1 lit. f DSGVO). GitHub ist unter dem EU-US Data Privacy Framework zertifiziert.</p>
+  <h3>1. Verantwortlicher</h3>
+  <p>netpd innovations, Inhaber Paul Dosdall, Anschrift siehe <button type="button" class="linkbtn" data-open="impressum">Impressum</button>. E-Mail: <a href="mailto:support@netpd.de">support@netpd.de</a></p>
 
-  <h3>Schriftarten</h3>
-  <p>Die Schriftarten sind lokal eingebunden. Es wird keine Verbindung zu Google Fonts aufgebaut.</p>
+  <h3>2. Das Wichtigste vorab</h3>
+  <p>Diese Website setzt <b>keine Cookies</b>, nutzt keine Werbe- oder Profil-Tracker und lädt Schriftarten, Bilder und Skripte vom eigenen Server. Für eine <b>anonyme Besucherstatistik</b> zählen wir Seitenaufrufe cookielos mit GoatCounter (Abschnitt 5). Deshalb gibt es kein Cookie-Banner. Weitere Daten an Dritte fließen nur, wenn du selbst etwas auslöst: bezahlen (Stripe) oder das Bestellformular abschicken (Google Forms).</p>
 
-  <h3>Bezahlung über Stripe</h3>
-  <p>Zur Zahlungsabwicklung wirst du zu Stripe (Stripe Payments Europe Ltd., Irland) weitergeleitet. Stripe verarbeitet die dort eingegebenen Zahlungs- und Kontaktdaten zur Durchführung der Zahlung (Art. 6 Abs. 1 lit. b DSGVO). Es gilt zusätzlich die Datenschutzerklärung von Stripe.</p>
+  <h3>3. Hosting und Server-Logfiles</h3>
+  <p>Die Website wird bei GitHub Pages gehostet (GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, USA). Beim Aufruf verarbeitet der Hoster technisch notwendige Daten – IP-Adresse, Datum und Uhrzeit, aufgerufene Seite, Browser-Kennung –, um die Seite auszuliefern und gegen Angriffe abzusichern. Rechtsgrundlage ist unser berechtigtes Interesse an einem sicheren, funktionierenden Angebot (Art. 6 Abs. 1 lit. f DSGVO). GitHub ist unter dem EU-US Data Privacy Framework zertifiziert (Angemessenheitsbeschluss, Art. 45 DSGVO).</p>
 
-  <h3>Bestellformular</h3>
-  <p>Die Angaben im Bestellformular (Name der beschenkten Person, Anlass, Wunschinhalte, Tonfall, Hinweise, E-Mail-Adresse, Upload-Erlaubnis) werden über Google Forms (Google Ireland Ltd.) übermittelt und ausschließlich zur Erstellung und Auslieferung deines Grußvideos verwendet (Art. 6 Abs. 1 lit. b DSGVO). Keine Weitergabe an Dritte, kein Verkauf, keine Werbung. Die Daten werden gelöscht, sobald sie für Bearbeitung und Lieferung nicht mehr nötig sind.</p>
+  <h3>4. Cookies und lokale Speicherung</h3>
+  <p>Diese Website setzt keine Cookies. Damit die Bestellung nach der Bezahlung weitergeht, legt sie im lokalen Speicher deines Browsers (localStorage) nur drei Einträge ab: deine Bestellnummer (<code>kr-order</code>), den Zahlungsstatus (<code>kr-paid</code>) und den Zeitpunkt (<code>kr-ts</code>). Diese Einträge verlassen deinen Browser nicht von selbst und sind für den von dir gewünschten Bestellablauf unbedingt erforderlich (§ 25 Abs. 2 Nr. 2 TDDDG); eine Einwilligung ist dafür nicht nötig. Sie werden gelöscht, sobald du das Bestellformular abschickst, spätestens aber automatisch nach 30 Tagen. Du kannst sie jederzeit über die Browser-Einstellungen („Websitedaten löschen“) entfernen.</p>
 
-  <h3>Kontaktformular</h3>
-  <p>Nachrichten über das Kontaktformular (Name, E-Mail, Nachricht) werden über den Dienst FormSubmit (formsubmit.co) per E-Mail an uns weitergeleitet und nur zur Bearbeitung deiner Anfrage verwendet (Art. 6 Abs. 1 lit. b bzw. f DSGVO).</p>
+  <h3>5. Besucherstatistik (GoatCounter)</h3>
+  <p>Um zu sehen, wie oft die Seite aufgerufen wird und woher Besucher kommen, nutzen wir den Statistikdienst GoatCounter (goatcounter.com). Bei jedem Aufruf sendet dein Browser an GoatCounter: die aufgerufene Seite (ohne Bestell- oder Zahlungsdaten), die verweisende Seite, Bildschirmbreite und Browser-Kennung; dabei wird technisch bedingt deine IP-Adresse übertragen. GoatCounter setzt keine Cookies, legt nichts auf deinem Gerät ab und speichert nach eigenen Angaben keine personenbezogenen Daten dauerhaft; IP-Adressen werden nicht gespeichert. Wir sehen nur zusammengefasste Zahlen (Aufrufe, Herkunft, Gerätetyp, Land) – keine einzelnen Personen und keine Profile. Zusätzlich zählen wir anonym, wie oft zur Kasse gegangen, bezahlt und das Bestellformular abgeschickt wird. Rechtsgrundlage ist unser berechtigtes Interesse an einer datensparsamen Reichweitenmessung (Art. 6 Abs. 1 lit. f DSGVO); du kannst jederzeit widersprechen (Art. 21 DSGVO), z. B. per E-Mail. Sendet dein Browser „Do Not Track“ oder „Global Privacy Control“, wird gar nicht erst gezählt.</p>
 
-  <h3>Lokale Speicherung im Browser</h3>
-  <p>Für den Bestellablauf speichert die Seite deine Bestellnummer und den Zahlungsstatus im lokalen Speicher deines Browsers. Beides wird gelöscht, sobald du das Bestellformular abschickst. Es werden keine Tracking- oder Werbe-Cookies eingesetzt.</p>
+  <h3>6. Bezahlung über Stripe</h3>
+  <p>Zum Bezahlen wirst du auf eine Seite von Stripe weitergeleitet (Stripe Payments Europe, Limited, 1 Grand Canal Street Lower, Grand Canal Dock, Dublin, D02 H210, Irland). Stripe verarbeitet dort deine Zahlungs- und Kontaktdaten zur Durchführung der Zahlung (Art. 6 Abs. 1 lit. b DSGVO) und setzt auf seinen eigenen Seiten Cookies, u. a. zur Betrugsprävention. Wir übergeben dabei nur die zufällige Bestellnummer. Eine Übermittlung an Stripe, Inc. in den USA ist möglich; Stripe ist unter dem EU-US Data Privacy Framework zertifiziert. Es gilt zusätzlich die <a href="https://stripe.com/de/privacy" target="_blank" rel="noopener">Datenschutzerklärung von Stripe</a>. Rechnungs- und Zahlungsdaten bewahren wir so lange auf, wie Steuer- und Handelsrecht es verlangen (bis zu 10 Jahre, § 147 AO, § 257 HGB; Art. 6 Abs. 1 lit. c DSGVO).</p>
 
-  <h3>Deine Rechte</h3>
-  <p>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch. Wende dich dazu an <a href="mailto:support@netpd.de">support@netpd.de</a>. Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren.</p>
+  <h3>7. Bestellformular (Google Forms)</h3>
+  <p>Erst wenn du das Bestellformular abschickst, baut dein Browser eine Verbindung zu Google auf (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland) und übermittelt deine Angaben samt IP-Adresse. Übermittelt werden: Bestellnummer, Name der beschenkten Person, Anlass, Wunschinhalte, Tonfall, Hinweise, deine E-Mail-Adresse und die Upload-Entscheidung. Wir nutzen die Daten ausschließlich, um dein Grußvideo zu erstellen und dir zu schicken (Art. 6 Abs. 1 lit. b DSGVO). Ohne diese Angaben können wir das Video nicht anfertigen. Eine Übermittlung an Google LLC in den USA ist möglich; Google ist unter dem EU-US Data Privacy Framework zertifiziert. Die Formulardaten löschen wir, sobald das Video geliefert ist und keine Rückfragen mehr zu erwarten sind.</p>
+  <p>Gibst du den Namen einer anderen Person an (die beschenkte Person), verarbeiten wir nur diesen Namen und deine Angaben zum Anlass – ausschließlich für das Video.</p>
+
+  <h3>8. Veröffentlichung des Videos</h3>
+  <p>Nur wenn du im Formular „Ja“ wählst, darf Kratoskai das Video auf Instagram und TikTok (Kratoskai1974) veröffentlichen (Einwilligung, Art. 6 Abs. 1 lit. a DSGVO). Die Einwilligung ist freiwillig und jederzeit per E-Mail an <a href="mailto:support@netpd.de">support@netpd.de</a> widerrufbar; der Beitrag wird dann gelöscht. Für die Verarbeitung auf diesen Plattformen sind zusätzlich deren Betreiber verantwortlich.</p>
+
+  <h3>9. Kontakt per E-Mail</h3>
+  <p>Schreibst du uns (auch über den Kontakt-Button, der nur dein eigenes E-Mail-Programm öffnet), verarbeiten wir Name, E-Mail-Adresse und Nachricht, um deine Anfrage zu beantworten (Art. 6 Abs. 1 lit. b bzw. f DSGVO). Es wird dafür kein externer Formulardienst genutzt. Die Nachricht löschen wir, wenn die Anfrage erledigt ist, sofern keine Aufbewahrungspflicht besteht.</p>
+
+  <h3>10. Deine Rechte</h3>
+  <p>Du hast das Recht auf Auskunft (Art. 15), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18), Datenübertragbarkeit (Art. 20) und Widerspruch gegen Verarbeitungen auf Grundlage berechtigter Interessen (Art. 21 DSGVO). Eine Einwilligung kannst du jederzeit mit Wirkung für die Zukunft widerrufen (Art. 7 Abs. 3 DSGVO). Eine E-Mail an <a href="mailto:support@netpd.de">support@netpd.de</a> genügt. Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren (Art. 77 DSGVO), z. B. bei der Behörde deines Wohnorts.</p>
+  <p>Eine automatisierte Entscheidungsfindung oder Profilbildung findet nicht statt.</p>
+
+  <p class="hint">Stand: November 2026</p>
 </dialog>
 
 <dialog class="legal" id="kontakt" aria-labelledby="kt-h">
   <button class="x" type="button" data-close aria-label="Schließen">✕</button>
   <h2 class="display" id="kt-h">Kontakt</h2>
-  <p>Fragen zur Bestellung oder zum Video? Schreib uns – oder direkt an <a href="mailto:support@netpd.de">support@netpd.de</a>.</p>
+  <p>Fragen zur Bestellung oder zum Video? Schreib uns an <a href="mailto:support@netpd.de">support@netpd.de</a> – oder füll das hier aus: Der Button öffnet dein E-Mail-Programm mit fertiger Nachricht. Es wird nichts über fremde Dienste verschickt.</p>
   <form id="contactform" novalidate>
     <div class="field">
       <label class="l" for="c-name">Dein Name <span class="req">*</span></label>
@@ -671,12 +705,13 @@
       <label class="l" for="c-msg">Nachricht <span class="req">*</span></label>
       <textarea id="c-msg" name="message" required maxlength="2000"></textarea>
     </div>
-    <label class="check"><input type="checkbox" id="c-privacy" required> <span>Ich bin einverstanden, dass meine Angaben zur Bearbeitung meiner Anfrage verarbeitet werden (siehe <button type="button" class="linkbtn" data-open="datenschutz">Datenschutz</button>). <span class="req">*</span></span></label>
-    <button class="btn full" type="submit" id="c-send">✉️ Nachricht senden</button>
+    <p class="hint">Hinweise zum Datenschutz: <button type="button" class="linkbtn" data-open="datenschutz">Datenschutzerklärung</button></p>
+    <button class="btn full" type="submit" id="c-send">✉️ E-Mail öffnen</button>
     <p class="msg" id="c-msgout" role="status"></p>
   </form>
 </dialog>
 
+<a class="btn order-fab" id="order-fab" href="#bestellen">🎬 Grußvideo bestellen</a>
 <div class="toast" id="toast" role="status"></div>
 <div class="sky" id="sky" aria-hidden="true"></div>
 
@@ -703,16 +738,25 @@
 <script>
   // ==== HIER ANPASSEN ====
   const CONFIG = {
-    price: "19,74 €",                                // Preis, wie er angezeigt wird
+    price: "22,70 €",                                // Preis, wie er angezeigt wird
     cardCheckoutUrl: "https://buy.stripe.com/aFa5kx8Gx0Gyeqecju6EU00", // Stripe-Zahlungslink (Karte, Apple Pay, …)
+    // Rabattcodes: Code -> Prozent. Nur für die Anzeige; abgezogen wird bei Stripe
+    // (dort muss es einen Aktionscode mit genau diesem Namen geben).
+    promoCodes: { "FURZ": 33 },
     // Google-Formular "Video Lieferung" – hierhin werden die Formulardaten geschickt
     formAction: "https://docs.google.com/forms/d/e/1FAIpQLSdvHA9jKSeqNm56oWYFlRvwkZH092U-KRMA-iYhpieJP-JizA/formResponse",
     notesEntry: "entry.1801969503",                    // Feld "Besondere Hinweise" (bekommt Bestellnr. + Bezahlart vorangestellt)
-    contactAction: "https://formsubmit.co/ajax/support@netpd.de" // Kontaktformular (erste Nachricht muss per Mail bestätigt werden)
+    contactMail: "support@netpd.de"                    // Kontakt: öffnet das Mailprogramm des Besuchers (kein Drittanbieter)
   };
   // Tipp: Beim Zahlungsanbieter als Weiterleitung nach erfolgreicher Zahlung
   // diese Seite mit ?bezahlt=1 eintragen – dann ist das Formular sofort offen.
   // =======================
+
+  // Anonymous event counting (GoatCounter, see Datenschutz section 5)
+  function track(name) {
+    const go = () => { try { window.goatcounter.count({ path: name, title: name, event: true }); } catch (e) {} };
+    if (window.goatcounter && window.goatcounter.count) go(); else window.addEventListener("load", go);
+  }
 
   // localStorage so the order number survives the round trip to Stripe (even in a new tab)
   function store(key, value) {
@@ -723,11 +767,17 @@
     } catch (e) { return null; }
   }
 
+  // Order data in localStorage expires after 30 days (see Datenschutz, section 4)
+  const MAX_AGE = 30 * 24 * 60 * 60 * 1000;
+  const savedAt = Number(store("kr-ts"));
+  if (!savedAt || Date.now() - savedAt > MAX_AGE) { store("kr-order", null); store("kr-paid", null); store("kr-ts", null); }
+
   let orderNo = store("kr-order");
   if (!orderNo) {
     const abc = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     orderNo = "KR-" + Array.from({ length: 5 }, () => abc[Math.floor(Math.random() * abc.length)]).join("");
     store("kr-order", orderNo);
+    store("kr-ts", String(Date.now()));
   }
 
   document.querySelectorAll("[data-price]").forEach(el => el.textContent = CONFIG.price);
@@ -759,43 +809,28 @@
   window.addEventListener("hashchange", openFromHash);
   openFromHash();
 
-  // Contact form -> FormSubmit -> E-Mail an support@netpd.de
+  // Contact form -> opens the visitor's own mail app (no third-party form service)
   const contactForm = document.getElementById("contactform");
   const contactOut = document.getElementById("c-msgout");
-  contactForm.addEventListener("submit", async e => {
+  contactForm.addEventListener("submit", e => {
     e.preventDefault();
     contactOut.style.color = "";
     const bad = [...contactForm.querySelectorAll("[required]")].find(el => !el.checkValidity());
     if (bad) {
       contactOut.textContent = bad.type === "email" ? "Bitte gib eine gültige E-Mail-Adresse an."
-        : bad.type === "checkbox" ? "Bitte stimme der Datenverarbeitung zu."
         : "Bitte fülle alle Pflichtfelder aus.";
       bad.focus();
       return;
     }
-    const send = document.getElementById("c-send");
-    send.disabled = true;
-    try {
-      const res = await fetch(CONFIG.contactAction, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          _subject: "Kontaktanfrage Kratoskai-Shop",
-          _template: "table",
-          _captcha: "false",
-          name: document.getElementById("c-name").value,
-          email: document.getElementById("c-mail").value,
-          message: document.getElementById("c-msg").value
-        })
-      });
-      if (!res.ok) throw new Error(res.status);
-      contactForm.reset();
-      contactOut.style.color = "#3aa655";
-      contactOut.textContent = "Danke! Deine Nachricht ist unterwegs. 💨";
-    } catch (err) {
-      contactOut.textContent = "Senden hat nicht geklappt – schreib uns bitte direkt an support@netpd.de.";
-    }
-    send.disabled = false;
+    const name = document.getElementById("c-name").value.trim();
+    const mail = document.getElementById("c-mail").value.trim();
+    const text = document.getElementById("c-msg").value.trim();
+    const body = text + "\n\n--\n" + name + "\n" + mail;
+    location.href = "mailto:" + CONFIG.contactMail
+      + "?subject=" + encodeURIComponent("Kontaktanfrage Kratoskai-Shop")
+      + "&body=" + encodeURIComponent(body);
+    contactOut.style.color = "#3aa655";
+    contactOut.textContent = "Dein E-Mail-Programm sollte sich jetzt öffnen. Falls nicht: schreib direkt an " + CONFIG.contactMail + ".";
   });
 
   // Typing bubble in the phone mockup
@@ -868,6 +903,42 @@
     pms.forEach(b => b.setAttribute("aria-checked", String(b === btn)));
   }));
 
+  // Discount code: shown here, applied by Stripe via prefilled_promo_code
+  const promo = document.getElementById("promo");
+  const promoMsg = document.getElementById("promo-msg");
+  const totalPrice = document.getElementById("total-price");
+  const basePrice = parseFloat(CONFIG.price.replace(/[^\d,]/g, "").replace(",", "."));
+  const euro = n => n.toFixed(2).replace(".", ",") + " €";
+  function promoCode() { return promo.value.trim().toUpperCase(); }
+  function updatePromo() {
+    const code = promoCode();
+    const pct = CONFIG.promoCodes[code];
+    promoMsg.classList.toggle("ok", !!pct);
+    if (!code) { promoMsg.textContent = ""; totalPrice.textContent = CONFIG.price; return; }
+    if (pct) {
+      const off = Math.round(basePrice * pct) / 100;
+      promoMsg.textContent = "✅ Code " + code + ": " + pct + " % gespart (−" + euro(off) + ")";
+      totalPrice.innerHTML = "<s>" + CONFIG.price + "</s>" + euro(basePrice - off);
+    } else {
+      promoMsg.textContent = "Dieser Code wird an der Kasse geprüft.";
+      totalPrice.textContent = CONFIG.price;
+    }
+  }
+  promo.addEventListener("input", updatePromo);
+  const codeParam = new URLSearchParams(location.search).get("code");
+  if (codeParam) { promo.value = codeParam; updatePromo(); }
+
+  // Floating "Grußvideo bestellen" button: hidden while the order/form area is on screen
+  const fab = document.getElementById("order-fab");
+  if ("IntersectionObserver" in window) {
+    const seen = new Set();
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => en.isIntersecting ? seen.add(en.target) : seen.delete(en.target));
+      fab.classList.toggle("away", seen.size > 0);
+    });
+    ["bestellen", "formular"].forEach(id => io.observe(document.getElementById(id)));
+  }
+
   const agree = document.getElementById("agree");
   const pay = document.getElementById("pay");
   const msg = document.getElementById("msg");
@@ -880,9 +951,13 @@
       return;
     }
     // Stripe shows the order number on the payment as "client_reference_id"
-    if (url.includes("buy.stripe.com")) url += (url.includes("?") ? "&" : "?") + "client_reference_id=" + orderNo;
+    if (url.includes("buy.stripe.com")) {
+      url += (url.includes("?") ? "&" : "?") + "client_reference_id=" + orderNo;
+      if (promoCode()) url += "&prefilled_promo_code=" + encodeURIComponent(promoCode());
+    }
     msg.style.color = "var(--muted)";
     msg.textContent = "Du wirst zur Bezahlung weitergeleitet …";
+    track(promoCode() ? "zur-kasse-mit-code-" + promoCode().toLowerCase() : "zur-kasse");
     // Same tab: after paying, Stripe sends the buyer back here with ?bezahlt=… and the form opens
     location.href = url;
   });
@@ -908,6 +983,7 @@
   if (paidRef !== null) {
     unlockForm(paidRef.startsWith("cs_") ? "Stripe " + paidRef : "Stripe", true);
     document.getElementById("paidbanner").hidden = false;
+    track("bezahlt");
     history.replaceState(null, "", location.pathname + "#formular");
   } else if (store("kr-paid")) {
     unlockForm(store("kr-paid"), false);
@@ -934,7 +1010,7 @@
     if (first) {
       formmsg.textContent = first.type === "email" ? "Bitte gib eine gültige E-Mail-Adresse an."
         : first.type === "radio" ? "Bitte sag uns, ob das Video hochgeladen werden darf."
-        : first.type === "checkbox" ? "Bitte stimme der Datenverarbeitung zu."
+        : first.type === "checkbox" ? "Bitte bestätige, dass du die Datenschutzhinweise gelesen hast."
         : "Bitte gib an, für wen das Video ist.";
       first.focus();
       return;
@@ -950,11 +1026,13 @@
     try {
       await fetch(CONFIG.formAction, { method: "POST", mode: "no-cors", body: data });
       document.getElementById("s-mail").textContent = document.getElementById("f-mail").value;
+      track("auftrag-abgeschickt");
       form.hidden = true;
       document.getElementById("success").hidden = false;
       // Order done: the next purchase gets a fresh number and a locked form
       store("kr-order", null);
       store("kr-paid", null);
+      store("kr-ts", null);
       formcard.scrollIntoView({ behavior: "smooth", block: "start" });
     } catch (err) {
       send.disabled = false;
@@ -962,6 +1040,17 @@
       formmsg.textContent = "Das hat nicht geklappt – bitte Internetverbindung prüfen und nochmal versuchen.";
     }
   });
+</script>
+<!-- Besucherstatistik: GoatCounter (cookielos, Skript liegt lokal). Konto: https://kratoskai.goatcounter.com -->
+<script>window.goatcounter = { path: function () { return location.pathname || "/"; } };</script>
+<script>
+  // Nicht zählen, wenn der Browser "Do Not Track" bzw. GPC sendet
+  if (navigator.doNotTrack !== "1" && window.doNotTrack !== "1" && !navigator.globalPrivacyControl) {
+    const gc = document.createElement("script");
+    gc.async = true; gc.src = "stats.js";
+    gc.dataset.goatcounter = "https://kratoskai.goatcounter.com/count";
+    document.body.appendChild(gc);
+  }
 </script>
 </body>
 </html>
