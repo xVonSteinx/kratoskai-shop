@@ -471,6 +471,7 @@
           <ol>
             <li>Name der Person, die das Video bekommt</li>
             <li>Anlass, Botschaft und Tonfall</li>
+            <li>Mit oder ohne Furz 💨</li>
             <li>Besondere Hinweise (z. B. Aussprache)</li>
             <li>Deine E-Mail für die Lieferung</li>
           </ol>
@@ -545,6 +546,14 @@
               <div class="field span2">
                 <label class="l" for="f-notes">Besondere Hinweise <span class="opt">(optional)</span></label>
                 <textarea id="f-notes" maxlength="600" placeholder="z. B. Aussprache von Namen, bestimmte No-Gos"></textarea>
+              </div>
+
+              <div class="field span2" role="radiogroup" aria-labelledby="furz-label">
+                <span class="l" id="furz-label">Mit oder ohne Furz? <span class="req">*</span></span>
+                <div class="yn">
+                  <label><input type="radio" name="entry.805909593" value="Mit Furz" required> 💨 Mit Furz</label>
+                  <label><input type="radio" name="entry.805909593" value="Ohne Furz"> 🙊 Ohne Furz</label>
+                </div>
               </div>
 
               <div class="field span2" role="radiogroup" aria-labelledby="yn-label">
@@ -1016,6 +1025,7 @@
     const first = [...form.querySelectorAll("[required]")].find(el => !el.checkValidity());
     if (first) {
       formmsg.textContent = first.type === "email" ? "Bitte gib eine gültige E-Mail-Adresse an."
+        : first.type === "radio" && first.name === "entry.805909593" ? "Bitte wähle: mit oder ohne Furz?"
         : first.type === "radio" ? "Bitte sag uns, ob das Video hochgeladen werden darf."
         : first.type === "checkbox" ? "Bitte bestätige, dass du die Datenschutzhinweise gelesen hast."
         : "Bitte gib an, für wen das Video ist.";
