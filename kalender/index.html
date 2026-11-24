@@ -115,6 +115,15 @@
   <!-- KAUFEN -->
   <section class="card" id="kaufen">
     <h2 class="display">Kalender holen</h2>
+    <div id="wl">
+      <p style="margin:0;color:var(--muted)">Der Verkauf startet bald! Trag dich ein – wir schicken dir <b>eine</b> E-Mail, sobald du den Kalender kaufen kannst.</p>
+      <label class="l" for="wl-mail">E-Mail-Adresse</label>
+      <input type="email" id="wl-mail" autocomplete="email" placeholder="du@beispiel.de">
+      <label class="check"><input type="checkbox" id="wl-ok"> <span>Ja, benachrichtigt mich einmalig per E-Mail, sobald der Furzkalender zu kaufen ist. Danach wird meine Adresse gelöscht. Mehr dazu in den <a href="../#datenschutz">Datenschutzhinweisen</a>.</span></label>
+      <button class="btn full" id="wl-send">🔔 Benachrichtige mich</button>
+      <p class="msg" id="wl-msg" role="status"></p>
+    </div>
+    <div id="buybox" hidden>
     <p style="margin:0;color:var(--muted)">Einmal zahlen, dann mit deiner E-Mail anmelden und jeden Tag ein Türchen öffnen – am Handy oder PC.</p>
     <label class="check"><input type="checkbox" id="c-start"> <span>Ich möchte, dass ich sofort Zugang zum Kalender bekomme und die Videos ab dem 1.12. freigeschaltet werden. Mir ist bekannt, dass ich mein Widerrufsrecht verliere, sobald das erste Türchen freigeschaltet ist.</span></label>
     <label class="check"><input type="checkbox" id="c-rules"> <span>Ich habe die <a href="../#datenschutz">Datenschutzhinweise</a> gelesen. Den Link zum Kalender gebe ich nicht weiter.</span></label>
@@ -123,10 +132,11 @@
     <p></p>
     <button class="btn full" id="buy" disabled>Jetzt kaufen</button>
     <p class="msg" id="buymsg" role="status"></p>
+    </div>
   </section>
 
   <!-- LOGIN -->
-  <section class="card" id="login">
+  <section class="card" id="login" hidden>
     <h2 class="display">Zum Kalender</h2>
     <div id="loginform">
       <p style="margin:0;color:var(--muted)">Gib die E-Mail-Adresse ein, mit der du bezahlt hast. Du bekommst einen Anmelde-Link – kein Passwort nötig.</p>
@@ -201,9 +211,39 @@
   // ---- Kaufen
   const checks = [$("c-start"), $("c-rules")];
   checks.forEach(c => c.addEventListener("change", () => { $("buy").disabled = !checks.every(x => x.checked); }));
-  // Verkauf nur, wenn der Kalender-Server erreichbar ist (sonst könnte niemand sich anmelden)
+  // Verkauf nur, wenn der Server erreichbar ist UND der Verkauf freigeschaltet ist – sonst Warteliste
   let apiOk = false;
-  fetch(CONFIG.api + "/status", { cache: "no-store" }).then(r => r.ok && r.json()).then(j => { apiOk = !!(j && j.ok); }).catch(() => {});
+  fetch(CONFIG.api + "/status", { cache: "no-store" }).then(r => r.ok && r.json()).then(j => {
+    apiOk = !!(j && j.ok && j.verkauf_offen);
+    if (apiOk) { $("wl").hidden = true; $("buybox").hidden = false; $("login").hidden = false; }
+  }).catch(() => {});
+
+  // ---- Warteliste
+  $("wl-send").onclick = async () => {
+    const mail = $("wl-mail").value.trim().toLowerCase(), out = $("wl-msg");
+    out.className = "msg";
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) { out.textContent = "Bitte gib eine gültige E-Mail-Adresse an."; return; }
+    if (!$("wl-ok").checked) { out.textContent = "Bitte setz das Häkchen, damit wir dir schreiben dürfen."; return; }
+    $("wl-send").disabled = true;
+    try {
+      const r = await fetch(CONFIG.api + "/warteliste", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: mail, einwilligung: true }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) { out.textContent = j.fehler || "Das hat nicht geklappt – bitte gleich nochmal versuchen."; return; }
+      out.className = "msg ok"; out.textContent = "Fast geschafft! Wir haben dir eine Mail geschickt – bitte klick dort auf den Bestätigungslink (auch im Spam nachsehen).";
+    } catch (e) { out.textContent = "Die Anmeldung ist gerade nicht erreichbar – bitte später nochmal versuchen."; }
+    finally { $("wl-send").disabled = false; }
+  };
+  async function confirmWaitlist(token) {
+    history.replaceState(null, "", location.pathname + "#kaufen");
+    const out = $("wl-msg");
+    try {
+      const r = await fetch(CONFIG.api + "/warteliste/bestaetigen", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token }) });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok) { out.className = "msg ok"; out.textContent = "✅ Bestätigt! Du bekommst eine Mail, sobald der Furzkalender zu kaufen ist."; }
+      else { out.className = "msg"; out.textContent = j.fehler || "Der Bestätigungslink funktioniert nicht mehr."; }
+    } catch (e) { out.className = "msg"; out.textContent = "Gerade nicht erreichbar – bitte den Link später nochmal öffnen."; }
+    $("kaufen").scrollIntoView();
+  }
   $("buy").addEventListener("click", () => {
     if (!CONFIG.checkoutUrl || !apiOk) { $("buymsg").textContent = "Der Verkauf startet in Kürze – schau bald wieder vorbei!"; return; }
     $("buymsg").className = "msg ok"; $("buymsg").textContent = "Du wirst zur Bezahlung weitergeleitet …";
@@ -315,6 +355,7 @@
     let res;
     try { res = await api("/kalender"); } catch (e) { $("loginmsg").textContent = "Keine Verbindung zum Kalender – bitte Seite neu laden."; return; }
     if (res.status === 401) { store.set(null); return; }
+    $("login").hidden = false;
     const mail = res.data.email || "";
     $("loginform").hidden = true; $("member").hidden = false; $("who").textContent = mail;
     $("hdr-cta").textContent = "🎄 Mein Kalender"; $("hdr-cta").href = "#login";
@@ -352,7 +393,7 @@
   // Rückkehr von Stripe
   const params = new URLSearchParams(location.search);
   if (params.has("bezahlt")) {
-    $("paidbanner").hidden = false;
+    $("paidbanner").hidden = false; $("login").hidden = false;
     history.replaceState(null, "", location.pathname + "#login");
     setTimeout(() => $("login").scrollIntoView({ behavior: "smooth" }), 300);
   }
@@ -362,6 +403,7 @@
     if (params.has("vorschau")) return;
     const m = location.hash.match(/^#t=([A-Za-z0-9_-]{20,})$/);
     if (m) {
+      $("login").hidden = false;
       history.replaceState(null, "", location.pathname + "#login");
       try {
         const { status, data } = await api("/sitzung", { body: { token: m[1] } });
@@ -372,12 +414,16 @@
     }
     if (store.get()) loadMember();
   }
-  window.addEventListener("hashchange", () => { if (location.hash.startsWith("#t=")) fromLink(); });
+  window.addEventListener("hashchange", () => {
+    if (location.hash.startsWith("#t=")) fromLink();
+    const w = location.hash.match(/^#w=([A-Za-z0-9_-]{20,})$/); if (w) confirmWaitlist(w[1]);
+  });
+  { const w = location.hash.match(/^#w=([A-Za-z0-9_-]{20,})$/); if (w) confirmWaitlist(w[1]); }
   fromLink();
 
   // Vorschau ohne Server: kalender/?vorschau=1
   if (params.has("vorschau")) {
-    $("loginform").hidden = true; $("member").hidden = false; $("who").textContent = "vorschau@beispiel.de";
+    $("login").hidden = false; $("loginform").hidden = true; $("member").hidden = false; $("who").textContent = "vorschau@beispiel.de";
     $("calwrap").hidden = false; drawCalendar({}, null, openUpTo()); if (openUpTo() < 6) setupWish("vorschau@beispiel.de", null);
   }
 </script>
