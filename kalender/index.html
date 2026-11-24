@@ -248,9 +248,10 @@
 
   // ---- Kalender zeichnen
   const ORDER = [7, 19, 3, 24, 12, 1, 15, 9, 21, 5, 17, 11, 2, 23, 14, 6, 20, 8, 16, 4, 22, 10, 18, 13];
-  function drawCalendar(doors, personal) {
-    const upto = openUpTo(), today = berlinDate();
-    const isToday = n => today.y === CONFIG.year && today.m === 12 && today.d === n;
+  // upto kommt vom Server (Serverzeit, deutsche Zeit) – die Uhr des Geräts kann nichts freischalten
+  function drawCalendar(doors, personal, upto) {
+    const today = berlinDate();
+    const isToday = n => n === upto && today.y === CONFIG.year && today.m === 12 && today.d === n;
     $("calhint").textContent = upto === 0
       ? "Ab dem 1. Dezember öffnet sich jeden Tag ein Türchen. Bis dahin: Furzgruß-Wunsch für den 6.12. ausfüllen (unten)!"
       : "Tippe auf ein Türchen. Neue Türchen öffnen sich jeden Tag um Mitternacht (deutsche Zeit).";
@@ -322,7 +323,7 @@
     $("kaufen").hidden = true;
     const doors = {}; (res.data.tuerchen || []).forEach(r => doors[r.tag] = r);
     $("calwrap").hidden = false;
-    drawCalendar(doors, res.data.persoenlich);
+    drawCalendar(doors, res.data.persoenlich, Number(res.data.offen_bis) || 0);
     if (res.data.wunsch_offen) setupWish(mail, res.data.wunsch);
   }
 
@@ -377,7 +378,7 @@
   // Vorschau ohne Server: kalender/?vorschau=1
   if (params.has("vorschau")) {
     $("loginform").hidden = true; $("member").hidden = false; $("who").textContent = "vorschau@beispiel.de";
-    $("calwrap").hidden = false; drawCalendar({}, null); if (openUpTo() < 6) setupWish("vorschau@beispiel.de", null);
+    $("calwrap").hidden = false; drawCalendar({}, null, openUpTo()); if (openUpTo() < 6) setupWish("vorschau@beispiel.de", null);
   }
 </script>
 <script>window.goatcounter = { path: function () { return location.pathname || "/"; } };</script>
