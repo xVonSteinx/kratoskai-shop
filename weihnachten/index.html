@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weihnachtsgrüße von Kratoskai – persönliches Video</title>
+<meta name="description" content="Ein persönlicher Weihnachtsgruß von Kratoskai als Video – für Familie, Freunde, Kollegen oder zum Wichteln.">
+<link rel="icon" href="../logo.svg" type="image/svg+xml">
+<style>
+  @font-face { font-family: Bangers; font-weight: 400; font-display: swap; src: url(../fonts/bangers.woff2) format("woff2"); }
+  @font-face { font-family: Inter; font-weight: 100 900; font-display: swap; src: url(../fonts/inter.woff2) format("woff2"); }
+  :root {
+    --night: #0f2342; --night-2: #1b3a66; --snow: #ffffff; --ink: #1d1a17; --muted: #6b6259; --bg: #fff8ef;
+    --red: #c8102e; --fire: #ff5a1f; --gold: #ffcf3f; --green: #2e8b3e; --green-2: #1f6b2c; --line: #ecdcc8;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 Inter, system-ui, sans-serif; overflow-x: hidden; }
+  a { color: var(--red); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+  .display { font-family: Bangers, Impact, sans-serif; font-weight: 400; letter-spacing: .5px; line-height: 1; }
+
+  header { position: sticky; top: 0; z-index: 20; background: rgba(15, 35, 66, .92); backdrop-filter: blur(6px); color: #fff; }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 64px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff; }
+  .logo img { width: 44px; }
+  .logo b { font: 400 26px Bangers, sans-serif; letter-spacing: 1px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; cursor: pointer; text-decoration: none;
+    font: 800 17px Inter, sans-serif; padding: 15px 24px; border-radius: 14px; color: #fff;
+    background: linear-gradient(135deg, #e8283f, var(--red)); box-shadow: 0 5px 0 #7a0a1c; }
+  .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #7a0a1c; }
+  .btn.green { background: linear-gradient(135deg, #3aa655, var(--green-2)); box-shadow: 0 5px 0 #14451c; }
+  .btn.small { padding: 9px 14px; font-size: 14px; }
+
+  /* Hero: Winternacht */
+  .hero { position: relative; overflow: hidden; color: #fff;
+    background: radial-gradient(ellipse at 70% 10%, #2a5288 0%, var(--night-2) 35%, var(--night) 75%); padding: 46px 0 120px; }
+  .hero::after { /* Schneehügel */
+    content: ""; position: absolute; left: -5%; right: -5%; bottom: -1px; height: 110px; background: var(--bg);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0; }
+  .hero .wrap { position: relative; z-index: 2; display: grid; grid-template-columns: 1.1fr .9fr; gap: 32px; align-items: center; }
+  .tag { display: inline-block; background: var(--gold); color: var(--ink); border: 3px solid var(--ink); border-radius: 999px; padding: 4px 14px; font-weight: 800; font-size: 14px; transform: rotate(-2deg); }
+  h1 { font-size: clamp(48px, 8.5vw, 92px); margin: 16px 0 10px; text-transform: uppercase; text-shadow: 4px 4px 0 rgba(0,0,0,.35); }
+  h1 .gold { color: var(--gold); }
+  .lead { font-size: 19px; color: #dbe6f7; max-width: 560px; margin: 0; }
+  .cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-top: 26px; }
+  .price { font-weight: 800; color: #dbe6f7; }
+  .price b { color: #fff; font-size: 24px; }
+  .pic { position: relative; justify-self: center; width: min(420px, 100%); }
+  .pic .frame { background: #fff; border: 4px solid var(--ink); border-radius: 28px; padding: 12px; box-shadow: 10px 10px 0 var(--red); transform: rotate(2deg); position: relative; }
+  .pic img { width: 100%; height: auto; display: block; border-radius: 18px; background: linear-gradient(160deg, #e9f1ff, #c9dcf5); }
+  .hat { position: absolute; top: -46px; left: 6%; width: 120px; transform: rotate(-18deg); z-index: 3; filter: drop-shadow(3px 4px 0 rgba(0,0,0,.25)); }
+  .bubble { position: absolute; right: -8px; top: 18px; max-width: 220px; background: #fff; color: var(--ink); border: 3px solid var(--ink);
+    border-radius: 16px; padding: 10px 12px; font-weight: 700; font-size: 14px; box-shadow: 4px 4px 0 var(--ink); z-index: 3; }
+
+  /* Schneeflocken */
+  .snow { position: fixed; inset: 0; pointer-events: none; z-index: 30; overflow: hidden; }
+  .flake { position: absolute; top: -40px; color: #fff; user-select: none; will-change: transform;
+    text-shadow: 0 0 4px rgba(120, 160, 220, .9), 0 0 1px #6b8fc4;
+    animation: fall linear infinite, sway ease-in-out infinite alternate; }
+  @keyframes fall { to { transform: translateY(calc(100vh + 80px)) rotate(360deg); } }
+  @keyframes sway { from { margin-left: -18px; } to { margin-left: 18px; } }
+
+  section { padding: 34px 0; }
+  h2 { font-size: clamp(36px, 6vw, 52px); margin: 0 0 6px; }
+  .sub { color: var(--muted); margin: 0 0 20px; font-size: 17px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .card { background: #fff; border: 3px solid var(--ink); border-radius: 20px; padding: 18px; box-shadow: 6px 6px 0 var(--green); }
+  .card:nth-child(2n) { box-shadow: 6px 6px 0 var(--red); }
+  .card .i { font-size: 34px; }
+  .card h3 { margin: 6px 0 4px; font-size: 18px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  .steps { counter-reset: s; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .step { background: #fff; border: 2px dashed var(--line); border-radius: 18px; padding: 18px; position: relative; }
+  .step::before { counter-increment: s; content: counter(s); position: absolute; top: -16px; left: 16px; width: 36px; height: 36px; border-radius: 50%;
+    background: var(--red); color: #fff; font: 400 22px/36px Bangers, sans-serif; text-align: center; border: 3px solid var(--ink); }
+  .step h3 { margin: 10px 0 4px; font-size: 18px; }
+  .step p { margin: 0; color: var(--muted); font-size: 15px; }
+  .example { background: var(--night); color: #fff; border-radius: 22px; padding: 22px; border: 3px solid var(--ink); box-shadow: 8px 8px 0 var(--gold); }
+  .example q { display: block; font-size: 20px; font-weight: 700; margin-top: 6px; }
+  .final { text-align: center; }
+  .final .card { display: inline-block; text-align: center; max-width: 560px; width: 100%; box-shadow: 8px 8px 0 var(--red); }
+  .code { display: inline-block; margin-top: 10px; background: #fff3c4; border: 3px dashed var(--ink); border-radius: 12px; padding: 4px 14px; font: 400 26px Bangers, sans-serif; letter-spacing: 3px; }
+  .hint { color: var(--muted); font-size: 13px; margin-top: 10px; }
+  details { background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 12px 16px; margin: 10px 0; }
+  summary { font-weight: 800; cursor: pointer; }
+  details p { color: var(--muted); margin: 8px 0 0; }
+  footer { border-top: 1px solid var(--line); margin-top: 20px; padding: 22px 0 60px; color: var(--muted); font-size: 14px; }
+  footer nav { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 6px; }
+
+  @media (max-width: 860px) {
+    .hero .wrap { grid-template-columns: 1fr; }
+    .pic { max-width: 360px; margin-top: 30px; }
+    .grid { grid-template-columns: 1fr 1fr; }
+    .steps { grid-template-columns: 1fr; gap: 26px; }
+  }
+  @media (max-width: 460px) {
+    .grid { grid-template-columns: 1fr; }
+    header .btn { display: none; }
+    .bubble { font-size: 12px; max-width: 170px; right: -4px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flake { animation: none; display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="snow" id="snow" aria-hidden="true"></div>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="../"><img src="../logo.svg" alt=""><b>KRATOSKAI</b></a>
+    <a class="btn small" href="../?anlass=weihnachten#bestellen">🎁 Jetzt bestellen</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="tag">🎄 Weihnachtsaktion</span>
+        <h1 class="display">Frohe <span class="gold">Weihnachten</span> von Kratoskai</h1>
+        <p class="lead">Ein persönlicher Weihnachtsgruß als Video – für die Familie, die beste Freundin, die Kollegen oder als Wichtelgeschenk, das garantiert keiner sonst hat.</p>
+        <div class="cta">
+          <a class="btn" href="../?anlass=weihnachten#bestellen">🎅 Weihnachtsgruß bestellen</a>
+          <span class="price">nur <b data-price>22,70 €</b></span>
+        </div>
+      </div>
+      <div class="pic">
+        <svg class="hat" viewBox="0 0 120 90" aria-hidden="true">
+          <path d="M10 70 Q40 0 92 18 Q104 24 106 40 L70 64 Z" fill="#c8102e" stroke="#1d1a17" stroke-width="4" stroke-linejoin="round"/>
+          <rect x="2" y="62" width="82" height="20" rx="10" fill="#fff" stroke="#1d1a17" stroke-width="4" transform="rotate(-10 43 72)"/>
+          <circle cx="106" cy="42" r="11" fill="#fff" stroke="#1d1a17" stroke-width="4"/>
+        </svg>
+        <div class="bubble">Ho ho ho! 🎅<br><span style="font-weight:500">Frohes Fest, nur für dich!</span></div>
+        <div class="frame"><img src="../kratoskai.webp" alt="Kratoskai" width="1322" height="1190"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 class="display">Für wen? Für alle!</h2>
+      <p class="sub">Ideen für deinen Weihnachtsgruß.</p>
+      <div class="grid">
+        <div class="card"><div class="i">👨‍👩‍👧</div><h3>Familie</h3><p>Der Gruß, über den unterm Baum noch an Ostern geredet wird.</p></div>
+        <div class="card"><div class="i">🎁</div><h3>Wichteln</h3><p>Schlägt jeden Duftkerzen-Gutschein. Versprochen.</p></div>
+        <div class="card"><div class="i">🥂</div><h3>Weihnachtsfeier</h3><p>Für Kollegen, Verein oder Stammtisch – einfach auf die Leinwand.</p></div>
+        <div class="card"><div class="i">✈️</div><h3>Freunde in der Ferne</h3><p>Ein bisschen Kratoskai-Wärme für alle, die nicht dabei sein können.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="example">
+        <span>So könnte es klingen (Beispiel):</span>
+        <q>Frohe Weihnachten, Familie Müller! Lasst euch die Gans schmecken – und Papa: Die Socken sind diesmal wirklich von Herzen.</q>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 class="display">So einfach geht's</h2>
+      <p class="sub">In drei Schritten zum Weihnachtsgruß.</p>
+      <div class="steps">
+        <div class="step"><h3>Bestellen & bezahlen</h3><p>Anlass „Weihnachten“ ist schon ausgewählt. Bezahlen per Karte, Apple Pay oder Google Pay.</p></div>
+        <div class="step"><h3>Wünsche eintragen</h3><p>Für wen ist der Gruß, was soll Kratoskai sagen, lustig oder besinnlich?</p></div>
+        <div class="step"><h3>Video bekommen</h3><p>Dein persönliches Video kommt als MP4 per E-Mail – bereit zum Verschenken.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap">
+      <div class="card">
+        <h2 class="display">🎄 Jetzt Weihnachtsgruß sichern</h2>
+        <p class="sub" style="margin:0">Persönliches Video von Kratoskai für <b data-price>22,70 €</b></p>
+        <div class="code">Code FURZ</div>
+        <p class="hint" style="margin-top:6px">= 33 % sparen, einfach beim Bestellen eingeben.</p>
+        <p style="margin:18px 0 0"><a class="btn" href="../?anlass=weihnachten#bestellen">🎅 Weihnachtsgruß bestellen</a></p>
+        <p class="hint">Endpreis. Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 class="display">Fragen?</h2>
+      <details><summary>Kommt das Video rechtzeitig vor Weihnachten?</summary><p>Kratoskai nimmt die Videos in der Reihenfolge der Bestellungen auf. Je früher du bestellst, desto entspannter wird's – warte also nicht bis Heiligabend.</p></details>
+      <details><summary>Kann ich mir den Text aussuchen?</summary><p>Ja – nach der Zahlung füllst du ein kurzes Formular aus: für wen der Gruß ist, was gesagt werden soll und welcher Tonfall. Oder Kratoskai improvisiert.</p></details>
+      <details><summary>Wie bekomme ich das Video?</summary><p>Als MP4-Datei per E-Mail oder als Downloadlink.</p></details>
+      <details><summary>Kann ich zurückgeben?</summary><p>Nein – das Video wird individuell für dich angefertigt, deshalb ist eine Rückgabe ausgeschlossen.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    © <span id="year">2026</span> Kratoskai · @kratoskai1974
+    <nav><a href="../">Grußvideo-Shop</a><a href="../#impressum">Impressum</a><a href="../#datenschutz">Datenschutz</a><a href="../#kontakt">Kontakt</a></nav>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Schneeflocken
+  (function () {
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const box = document.getElementById("snow");
+    const glyphs = ["❄", "❅", "❆", "•"];
+    const count = Math.min(60, Math.round(window.innerWidth / 18));
+    for (let i = 0; i < count; i++) {
+      const f = document.createElement("span");
+      f.className = "flake";
+      f.textContent = glyphs[i % glyphs.length];
+      const size = 8 + Math.random() * 20;
+      const fall = 7 + Math.random() * 10;
+      f.style.left = (Math.random() * 100) + "vw";
+      f.style.fontSize = size + "px";
+      f.style.opacity = (0.45 + Math.random() * 0.55).toFixed(2);
+      f.style.animationDuration = fall + "s, " + (2 + Math.random() * 3) + "s";
+      f.style.animationDelay = (-Math.random() * fall) + "s, " + (-Math.random() * 3) + "s";
+      box.appendChild(f);
+    }
+  })();
+</script>
+<script>window.goatcounter = { path: function () { return location.pathname || "/"; } };</script>
+<script>
+  if (navigator.doNotTrack !== "1" && window.doNotTrack !== "1" && !navigator.globalPrivacyControl) {
+    const gc = document.createElement("script"); gc.async = true; gc.src = "../stats.js";
+    gc.dataset.goatcounter = "https://kratoskai.goatcounter.com/count"; document.body.appendChild(gc);
+  }
+</script>
+</body>
+</html>
