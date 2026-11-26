@@ -449,7 +449,7 @@
       <div>
         <span class="tag">🎄 Weihnachts-Edition · Handgemacht</span>
         <h1 class="display">Dein <span class="hot">persönlicher</span> Weihnachtsgruss von Kratoskai</h1>
-        <p class="lead">Für die Familie, die Kollegen, das Wichteln oder die Liebsten in der Ferne – Kratoskai nimmt einen Weihnachtsgruß auf, der nur für eine Person gemacht ist. Einmalig. Persönlich. Leicht wahnsinnig.</p>
+        <p class="lead">Für die Familie, die Kollegen, das Wichteln oder die Liebsten in der Ferne – Kratoskai <b>verkleidet sich für dein Video als Weihnachtsmann</b> 🎅 und nimmt einen Gruß auf, der nur für eine Person gemacht ist. Einmalig. Persönlich. Leicht wahnsinnig.</p>
         <div class="hero-cta">
           <a class="btn" href="#bestellen">🎅 Weihnachtsgruß bestellen</a>
           <span class="price-pill">nur <b data-price></b></span>
@@ -461,7 +461,6 @@
         <div class="photo"><img src="kratoskai-weihnachtsmann.webp" width="720" height="900" alt="Kratoskai als Weihnachtsmann mit Kapuze, weißem Bart und Geschenkesack im verschneiten Wald"></div>
         <div class="bubble" id="bubble" aria-hidden="true"></div>
         <span class="sticker s1" aria-hidden="true">10–60 SEK!</span>
-        <span class="sticker s2" aria-hidden="true">PFFT! 💨</span>
       </div>
     </div>
   </div>
@@ -802,27 +801,6 @@
 
 <a class="btn order-fab" id="order-fab" href="#bestellen">🎅 Weihnachtsgruß bestellen</a>
 <div class="toast" id="toast" role="status"></div>
-<div class="sky" id="sky" aria-hidden="true"></div>
-
-<template id="fart-tpl">
-  <div class="fart"><div class="wob">
-    <svg viewBox="0 0 150 100">
-      <defs>
-        <radialGradient id="goo" cx="35%" cy="30%" r="70%">
-          <stop offset="0" stop-color="#dff27a"/><stop offset=".45" stop-color="#a9c934"/><stop offset="1" stop-color="#6f8f12"/>
-        </radialGradient>
-      </defs>
-      <g fill="url(#goo)">
-        <circle cx="8" cy="62" r="4"/><circle cx="20" cy="48" r="6"/><circle cx="18" cy="74" r="5"/>
-        <circle cx="34" cy="62" r="9"/>
-        <circle cx="62" cy="64" r="20"/><circle cx="80" cy="40" r="22"/><circle cx="104" cy="56" r="24"/>
-        <circle cx="86" cy="76" r="18"/><circle cx="122" cy="40" r="15"/><circle cx="128" cy="74" r="14"/>
-        <circle cx="100" cy="24" r="12"/><circle cx="142" cy="20" r="5"/><circle cx="64" cy="20" r="5"/>
-      </g>
-    </svg>
-    <span class="pfft">PFFT!</span>
-  </div></div>
-</template>
 
 <script>
   // ==== HIER ANPASSEN ====
@@ -944,28 +922,6 @@
     typeNext();
   }
 
-  // A fart cloud keeps flying across the screen (click it to pop it)
-  const sky = document.getElementById("sky");
-  const fartTpl = document.getElementById("fart-tpl");
-  const fartSays = ["Uff, wer war das? 😳", "Getroffen! 💨", "Riecht nach Grußvideo …", "Kratoskai war's nicht. Ehrlich."];
-  function launchFart() {
-    const el = fartTpl.content.firstElementChild.cloneNode(true);
-    const rtl = Math.random() < .4;
-    if (rtl) el.classList.add("rtl");
-    el.style.top = (10 + Math.random() * 70) + "vh";
-    el.style.setProperty("--dur", (7 + Math.random() * 5) + "s");
-    const size = 110 + Math.random() * 70;
-    el.style.width = size + "px";
-    el.addEventListener("animationend", e => { if (e.target === el) el.remove(); });
-    el.addEventListener("click", () => {
-      el.style.transform = getComputedStyle(el).transform;
-      el.classList.add("pop");
-      showToast(fartSays[Math.floor(Math.random() * fartSays.length)]);
-    }, { once: true });
-    sky.appendChild(el);
-    setTimeout(launchFart, 5000 + Math.random() * 6000);
-  }
-  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) setTimeout(launchFart, 1500);
 
   // Occasion examples
   const examples = {
